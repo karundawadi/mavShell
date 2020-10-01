@@ -39,6 +39,11 @@
 
 #define MAX_NUM_ARGUMENTS 5     // Mav shell only supports five arguments
 
+//Defining functions below this 
+void mavShell(char ** token, int token_count);
+
+
+//Main function
 int main()
 {
 
@@ -92,9 +97,37 @@ int main()
     {
       printf("token[%d] = %s\n", token_index, token[token_index] );  
     }
-
+    //Doing our function call before it is freed 
+    mavShell(token,token_count);
     free( working_root );
 
   }
   return 0;
+}
+
+
+// token is a double pointer with the value of index count, token count holds the seperated strings in the first entry part
+void mavShell(char ** token, int token_count){
+  
+  //Considering first part as a valid line of code 
+  pid_t pid =fork();
+  if(pid == -1){
+    perror("fork failed");
+    exit(EXIT_FAILURE);
+  }
+  else if(pid == 0){
+    printf("Hello from the child task");
+    char * ola = strcat("/bin/",token[0]);
+    printf("%s",ola);
+    //Running exec here 
+      execl("/bin/ls",token[0],NULL);
+    fflush(NULL);
+    exit(EXIT_SUCCESS);
+  }
+  else{
+    int status;
+    (void) waitpid(pid,&status, 0);
+    printf("Hello from the parent process");
+    fflush(NULL);
+  }
 }
