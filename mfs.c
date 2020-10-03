@@ -43,15 +43,33 @@
 
 #define MAX_NUM_ARGUMENTS 5     // Mav shell only supports five arguments
 
-//Linked list for history and getpids
+/*
+  Linked list stores the pid and the all the arguments entered for the process 
+  Has the index of the process
+*/
+typedef struct history_pid{
+  int pid_id;
+  char ** storedText;
+  struct history_pid* next_process;
+  struct history_pid* prev_process;
+}history_pid;
 
+//Our actual queue 
+typedef struct actual_queue{
+  history_pid *front,*back;
+}actual_queue;
+
+int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int* current_index);
+void add_to_queue(actual_queue* queue,int pid_id, char ** token,int* current_index);
+actual_queue* create_queue();
+history_pid* new_process(int pid_id,char ** token);
 
 //Main function
 int main()
 {
   //These are defined for the history feature and showpids feature 
-  char ** history = malloc(sizeof(char **)*15);
-  int counter = 0;
+  int process_id;
+  history_pid* head = NULL;
 
   char * cmd_str = (char*) malloc( MAX_COMMAND_SIZE );
 
@@ -130,6 +148,7 @@ int main()
 
     else{
       pid_t pid =fork();
+      process_id = pid;
 
       if(pid == -1){
         perror("fork failed");
@@ -155,8 +174,57 @@ int main()
         fflush(NULL);
       }
   }
+  // Adding the details to the linked list 
 
   free( working_root );
   }
   return 0;
+}
+
+
+//This function replaces from the front of the queue, return 1 if able,return 0 if false 
+/*
+  Takes in the process details and adds it to the front, freeing the front one 
+*/
+int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int* current_index){
+  history_pid* temp = queue->front;
+  history_pid* temp_new_process = new_process(pid_id,token);
+  queue->front =  temp_new_process;
+  temp_new_process->next_process = queue->front->next_process;
+  free(temp);
+  return 1;
+}
+
+//Create a new node with all the details 
+history_pid* new_process(int pid_id,char ** token){
+  history_pid* temp_process = (history_pid*) malloc(sizeof(history_pid));
+  temp_process->next_process = NULL;
+  temp_process->pid_id = pid_id;
+  strcpy(temp_process->storedText,token);
+  return temp_process;
+}
+
+//This creates out actual_queue with process ids and other details
+actual_queue* create_queue(){
+  actual_queue* queue = (actual_queue*) malloc(sizeof(actual_queue));
+  queue->front = NULL;
+  queue->back = NULL;
+  return queue;
+}
+
+//This function adds to the queue
+void add_to_queue(actual_queue* queue,int pid_id, char ** token,int* current_index){
+  history_pid* temp_process = new_process(pid_id,token);
+
+  //Checking if the queue is full towards the end, if not adding it normally, if it is we 
+  //remove from the front and add at the end
+  if(*current_index>14){
+    int status = delete_from_queue(queue,pid_id,token,current_index);
+  }else{
+  //When the queue is empty, we have 
+  if(queue->back == NULL){
+    queue->front = queue->back = temp_process;
+    return;
+    }
+  }
 }
