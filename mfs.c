@@ -100,7 +100,7 @@ int main()
       exit(0);
     }
     else if(strcmp(token[0],"cd")==0){
-      printf("Working \n");
+      //Converting first argument after cd to a string 
       char str_cpu[100];
       strcpy(str_cpu,token[1]);
       int changed_dir = chdir(str_cpu);
@@ -108,8 +108,9 @@ int main()
     else if(strcmp(token[0],"history")==0){
       //Need to print out the history 
     }
-    else if(strcmp(token[0],"\n")==0){
-      
+    else if(strcmp(token[0],"pwd")==0){
+      //Prints out the current directory 
+      execl("/bin/pwd","pwd",NULL);
     }
     else if(strcmp(token[0],"!")==0){
       //Need to perform task demanded by !
