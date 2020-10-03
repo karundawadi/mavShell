@@ -1,3 +1,7 @@
+/*
+  Name : Karun Dawadi 
+  Student ID : 1001660099
+*/
 // The MIT License (MIT)
 // 
 // Copyright (c) 2016, 2017, 2020 Trevor Bakker 
@@ -39,13 +43,15 @@
 
 #define MAX_NUM_ARGUMENTS 5     // Mav shell only supports five arguments
 
-//Defining functions below this 
-void mavShell(char ** token, int token_count);
+//Linked list for history and getpids
 
 
 //Main function
 int main()
 {
+  //These are defined for the history feature and showpids feature 
+  char ** history = malloc(sizeof(char **)*15);
+  int counter = 0;
 
   char * cmd_str = (char*) malloc( MAX_COMMAND_SIZE );
 
@@ -61,11 +67,16 @@ int main()
     // is no input
     while( !fgets (cmd_str, MAX_COMMAND_SIZE, stdin) );
 
+    //Handling the case when the first chracter entered is a return key and follows multiple white spaces 
+    if((cmd_str[0]=='\n')||(cmd_str[0]==' ')){
+      continue;
+    }
+
     /* Parse input */
     char *token[MAX_NUM_ARGUMENTS];
 
     int   token_count = 0;                                 
-                                                           
+
     // Pointer to point to the token
     // parsed by strsep
     char *argument_ptr;                                         
@@ -96,6 +107,10 @@ int main()
     {
       printf("token[%d] = %s\n", token_index, token[token_index] );  
     }
+    //Adding to the index 
+
+
+    //Code starts here
     if((strcmp(token[0],"exit")==0)||(strcmp(token[0],"quit")==0)){
       exit(0);
     }
@@ -108,10 +123,11 @@ int main()
     else if(strcmp(token[0],"history")==0){
       //Need to print out the history 
     }
-    
+
     else if(strcmp(token[0],"!")==0){
       //Need to perform task demanded by !
     }
+
     else{
       pid_t pid =fork();
 
@@ -135,7 +151,6 @@ int main()
       else{
         int status;
         //Waiting for the child to complete finishing 
-        //(void) removed from here
         waitpid(pid,&status, 0);
         fflush(NULL);
       }
