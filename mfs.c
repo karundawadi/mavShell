@@ -96,15 +96,20 @@ int main()
     {
       printf("token[%d] = %s\n", token_index, token[token_index] );  
     }
-    //Checking various conditions here  
-    if(strcmp(token[0],"exit")==0){
+    if((strcmp(token[0],"exit")==0)||(strcmp(token[0],"quit")==0)){
       exit(0);
     }
     else if(strcmp(token[0],"cd")==0){
-      //Need to cd
+      printf("Working \n");
+      char str_cpu[100];
+      strcpy(str_cpu,token[1]);
+      int changed_dir = chdir(str_cpu);
     }
     else if(strcmp(token[0],"history")==0){
       //Need to print out the history 
+    }
+    else if(strcmp(token[0],"\n")==0){
+      
     }
     else if(strcmp(token[0],"!")==0){
       //Need to perform task demanded by !
@@ -119,12 +124,13 @@ int main()
 
       else if(pid == 0){
         printf("Child task \n");
-        //Running exec here 
-        /*
-        execl is used as system call needs to be made. 
-        execl(path,path,arg1,arg2,....,NULL);
-        */
+        // Running execvp here as we do not specify the file path to it 
         int return_val = execvp(token[0],&token[0]);
+        printf("%d \n",return_val);
+        //To check if the command exist or not 
+        if (return_val == -1){
+          printf("%s: Command not found. \n",token[0]);
+        }
         fflush(NULL);
         exit(EXIT_SUCCESS);
       }
@@ -133,7 +139,6 @@ int main()
         //Waiting for the child to complete finishing 
         //(void) removed from here
         waitpid(pid,&status, 0);
-        printf("Hello from the parent process");
         fflush(NULL);
       }
   }
