@@ -108,10 +108,7 @@ int main()
     else if(strcmp(token[0],"history")==0){
       //Need to print out the history 
     }
-    else if(strcmp(token[0],"pwd")==0){
-      //Prints out the current directory 
-      execl("/bin/pwd","pwd",NULL);
-    }
+    
     else if(strcmp(token[0],"!")==0){
       //Need to perform task demanded by !
     }
