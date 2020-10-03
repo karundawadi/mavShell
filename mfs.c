@@ -54,22 +54,25 @@ typedef struct history_pid{
   struct history_pid* prev_process;
 }history_pid;
 
-//Our actual queue 
-typedef struct actual_queue{
-  history_pid *front,*back;
-}actual_queue;
+// //Our actual queue 
+// typedef struct actual_queue{
+//   history_pid *front,*back;
+// }actual_queue;
 
-int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int* current_index);
-void add_to_queue(actual_queue* queue,int pid_id, char ** token,int* current_index);
-actual_queue* create_queue();
-history_pid* new_process(int pid_id,char ** token);
+// int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int* current_index);
+// void add_to_queue(actual_queue* queue,int pid_id, char ** token,int* current_index);
+// actual_queue* create_queue();
+// history_pid* new_process(int pid_id,char ** token);
+// void free_queue(actual_queue* queue);
 
 //Main function
 int main()
 {
   //These are defined for the history feature and showpids feature 
   int process_id;
-  history_pid* head = NULL;
+  // actual_queue* queue = create_queue();
+  // int * current_index;
+  int counter = 0;
 
   char * cmd_str = (char*) malloc( MAX_COMMAND_SIZE );
 
@@ -164,6 +167,7 @@ int main()
         if (return_val == -1){
           printf("%s: Command not found. \n",token[0]);
         }
+        counter++;
         fflush(NULL);
         exit(EXIT_SUCCESS);
       }
@@ -174,57 +178,69 @@ int main()
         fflush(NULL);
       }
   }
+  // *current_index = counter;
   // Adding the details to the linked list 
-
+  // add_to_queue(queue,process_id,token,current_index);
   free( working_root );
   }
+  // free(queue);
   return 0;
 }
 
 
-//This function replaces from the front of the queue, return 1 if able,return 0 if false 
-/*
-  Takes in the process details and adds it to the front, freeing the front one 
-*/
-int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int* current_index){
-  history_pid* temp = queue->front;
-  history_pid* temp_new_process = new_process(pid_id,token);
-  queue->front =  temp_new_process;
-  temp_new_process->next_process = queue->front->next_process;
-  free(temp);
-  return 1;
-}
+// //This function replaces from the front of the queue, return 1 if able,return 0 if false 
+// /*
+//   Takes in the process details and adds it to the front, freeing the front one 
+// */
+// int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int* current_index){
+//   history_pid* temp = queue->front;
+//   history_pid* temp_new_process = new_process(pid_id,token);
+//   queue->front =  temp_new_process;
+//   temp_new_process->next_process = queue->front->next_process;
+//   free(temp);
+//   return 1;
+// }
 
-//Create a new node with all the details 
-history_pid* new_process(int pid_id,char ** token){
-  history_pid* temp_process = (history_pid*) malloc(sizeof(history_pid));
-  temp_process->next_process = NULL;
-  temp_process->pid_id = pid_id;
-  strcpy(temp_process->storedText,token);
-  return temp_process;
-}
+// //Create a new node with all the details 
+// history_pid* new_process(int pid_id,char ** token){
+//   history_pid* temp_process = (history_pid*) malloc(sizeof(history_pid));
+//   temp_process->next_process = NULL;
+//   temp_process->pid_id = pid_id;
+//   **temp_process->storedText= **token;
+//   return temp_process;
+// }
 
-//This creates out actual_queue with process ids and other details
-actual_queue* create_queue(){
-  actual_queue* queue = (actual_queue*) malloc(sizeof(actual_queue));
-  queue->front = NULL;
-  queue->back = NULL;
-  return queue;
-}
+// //This creates out actual_queue with process ids and other details
+// actual_queue* create_queue(){
+//   actual_queue* queue = (actual_queue*) malloc(sizeof(actual_queue));
+//   queue->front = NULL;
+//   queue->back = NULL;
+//   return queue;
+// }
 
-//This function adds to the queue
-void add_to_queue(actual_queue* queue,int pid_id, char ** token,int* current_index){
-  history_pid* temp_process = new_process(pid_id,token);
+// //This function adds to the queue
+// void add_to_queue(actual_queue* queue,int pid_id, char ** token,int* current_index){
+//   history_pid* temp_process = new_process(pid_id,token);
 
-  //Checking if the queue is full towards the end, if not adding it normally, if it is we 
-  //remove from the front and add at the end
-  if(*current_index>14){
-    int status = delete_from_queue(queue,pid_id,token,current_index);
-  }else{
-  //When the queue is empty, we have 
-  if(queue->back == NULL){
-    queue->front = queue->back = temp_process;
-    return;
-    }
-  }
-}
+//   //Checking if the queue is full towards the end, if not adding it normally, if it is we 
+//   //remove from the front and add at the end
+//   if(*current_index>14){
+//     int status = delete_from_queue(queue,pid_id,token,current_index);
+//   }else{
+//   //When the queue is empty, we have 
+//   if(queue->back == NULL){
+//     queue->front = queue->back = temp_process;
+//     return;
+//     }
+//   }
+// }
+
+// //This process frees all the nodes in the queue
+// void free_queue(actual_queue* queue){
+//   // while (queue->front->next_process != NULL){
+//   //   // history_pid* temp = queue->front->next_process;
+//   //   // free(queue->front);
+//   //   // queue = temp->next_process;
+//   // }
+//   // free(queue);
+// };
