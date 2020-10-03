@@ -107,26 +107,38 @@ int main()
 
 
 // token is a double pointer with the value of index count, token count holds the seperated strings in the first entry part
-void mavShell(char ** token, int token_count){
-  
-  //Considering first part as a valid line of code 
+void mavShell(char ** token_first, int token_count){
+  const char ** token = token_first;
+  // We exit when exit is typed
+  if(strcmp(token[0],"exit")==0){
+    exit(0);
+  }
+
   pid_t pid =fork();
+
   if(pid == -1){
     perror("fork failed");
     exit(EXIT_FAILURE);
   }
+
   else if(pid == 0){
-    printf("Hello from the child task");
-    char * ola = strcat("/bin/",token[0]);
-    printf("%s",ola);
-    //Running exec here 
-      execl("/bin/ls",token[0],NULL);
+    printf("Child task \n");
+    char * ola = strcat("/usr/bin/",token[0]);
+      //Running exec here 
+      /*
+      execl is used as system call needs to be made. 
+      execl(path,path,arg1,arg2,....,NULL);
+      */
+      execvp(token[0]);
     fflush(NULL);
     exit(EXIT_SUCCESS);
   }
+
   else{
     int status;
-    (void) waitpid(pid,&status, 0);
+    //Waiting for the child to complete finishing 
+    //(void) removed from here
+    waitpid(pid,&status, 0);
     printf("Hello from the parent process");
     fflush(NULL);
   }
