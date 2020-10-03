@@ -1,1 +1,0 @@
-mfs.c -> will take in the text and tokensize it on the basis of entry. 

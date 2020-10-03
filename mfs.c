@@ -89,57 +89,56 @@ int main()
         token_count++;
     }
 
-    // Now print the tokenized input as a debug check
-    // \TODO Remove this code and replace with your shell functionality
-
+    //Print the tokenized input as a debug check
     int token_index  = 0;
+
     for( token_index = 0; token_index < token_count; token_index ++ ) 
     {
       printf("token[%d] = %s\n", token_index, token[token_index] );  
     }
-    //Doing our function call before it is freed 
-    mavShell(token,token_count);
-    free( working_root );
+    //Checking various conditions here  
+    if(strcmp(token[0],"exit")==0){
+      exit(0);
+    }
+    else if(strcmp(token[0],"cd")==0){
+      //Need to cd
+    }
+    else if(strcmp(token[0],"history")==0){
+      //Need to print out the history 
+    }
+    else if(strcmp(token[0],"!")==0){
+      //Need to perform task demanded by !
+    }
+    else{
+      pid_t pid =fork();
 
+      if(pid == -1){
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+      }
+
+      else if(pid == 0){
+        printf("Child task \n");
+        //Running exec here 
+        /*
+        execl is used as system call needs to be made. 
+        execl(path,path,arg1,arg2,....,NULL);
+        */
+        int return_val = execvp(token[0],&token[0]);
+        fflush(NULL);
+        exit(EXIT_SUCCESS);
+      }
+      else{
+        int status;
+        //Waiting for the child to complete finishing 
+        //(void) removed from here
+        waitpid(pid,&status, 0);
+        printf("Hello from the parent process");
+        fflush(NULL);
+      }
+  }
+
+  free( working_root );
   }
   return 0;
-}
-
-
-// token is a double pointer with the value of index count, token count holds the seperated strings in the first entry part
-void mavShell(char ** token_first, int token_count){
-  const char ** token = token_first;
-  // We exit when exit is typed
-  if(strcmp(token[0],"exit")==0){
-    exit(0);
-  }
-
-  pid_t pid =fork();
-
-  if(pid == -1){
-    perror("fork failed");
-    exit(EXIT_FAILURE);
-  }
-
-  else if(pid == 0){
-    printf("Child task \n");
-    char * ola = strcat("/usr/bin/",token[0]);
-      //Running exec here 
-      /*
-      execl is used as system call needs to be made. 
-      execl(path,path,arg1,arg2,....,NULL);
-      */
-      execvp(token[0]);
-    fflush(NULL);
-    exit(EXIT_SUCCESS);
-  }
-
-  else{
-    int status;
-    //Waiting for the child to complete finishing 
-    //(void) removed from here
-    waitpid(pid,&status, 0);
-    printf("Hello from the parent process");
-    fflush(NULL);
-  }
 }
