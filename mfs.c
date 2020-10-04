@@ -49,7 +49,7 @@
 */
 typedef struct history_pid{
   int pid_id;
-  char ** storedText;
+  char * storedText;
   struct history_pid* next_process;
   struct history_pid* prev_process;
 }history_pid;
@@ -59,10 +59,10 @@ typedef struct actual_queue{
   history_pid *front,*back;
 }actual_queue;
 
-int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int current_index);
-void add_to_queue(actual_queue* queue,int pid_id, char ** token,int current_index);
+int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_index);
+void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index);
 actual_queue* create_queue();
-history_pid* new_process(int pid_id,char ** token);
+history_pid* new_process(int pid_id,char * token);
 void free_queue(actual_queue* queue);
 
 //Main function
@@ -178,7 +178,7 @@ int main()
       }
     }
     // Adding the details to the linked list 
-    add_to_queue(queue,process_id,token,counter);
+    add_to_queue(queue,process_id,working_str,counter);
     free_queue(queue);
     free( working_root );
     }
@@ -190,7 +190,7 @@ int main()
 /*
   Takes in the process details and adds it to the front, freeing the front one 
 */
-int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int current_index){
+int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_index){
   history_pid* temp = queue->front;
   queue->front =  temp->next_process;
   free(temp);
@@ -198,11 +198,11 @@ int delete_from_queue(actual_queue* queue,int pid_id, char ** token,int current_
 }
 
 //Create a new node with all the details 
-history_pid* new_process(int pid_id,char ** token){
+history_pid* new_process(int pid_id,char * token){
   history_pid* temp_process = (history_pid*) malloc(sizeof(history_pid));
   temp_process->next_process = NULL;
   temp_process->pid_id = pid_id;
-  temp_process->storedText= token;
+  strcpy(temp_process->storedText, token);
   return temp_process;
 }
 
@@ -215,7 +215,7 @@ actual_queue* create_queue(){
 }
 
 //This function adds to the queue
-void add_to_queue(actual_queue* queue,int pid_id, char ** token,int current_index){
+void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index){
     if(current_index >= 17){
       delete_from_queue(queue,pid_id,token,current_index);
     }  
@@ -235,7 +235,7 @@ void free_queue(actual_queue* queue){
     int i = 1;
     history_pid* temp = queue->front;
     while(temp->next_process!=NULL){
-      printf("%d) %d %s \n",i,temp->pid_id,temp->storedText[0]);
+      printf("%d) %d %s \n",i,temp->pid_id,temp->storedText);
       if(i<15) i++;
       temp=temp->next_process;
     }
