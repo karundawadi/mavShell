@@ -66,7 +66,6 @@ void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index
 actual_queue* create_queue();
 history_pid* new_process(int pid_id,char * token,int current_index);
 void print_queue(actual_queue* queue, int which_to_print, int line_no);
-void free_queue(actual_queue* queue);
 
 //Main function
 int main()
@@ -164,7 +163,6 @@ int main()
 
     //Code starts here
     if((strcmp(token[0],"exit")==0)||(strcmp(token[0],"quit")==0)){
-      free_queue(queue);
       exit(0);
     }
     else if(strcmp(token[0],"cd")==0){
@@ -295,16 +293,3 @@ void print_queue(actual_queue* queue, int which_to_print, int line_no){
       //do nothing 
     }
 };
-void free_queue(actual_queue* queue){
-  history_pid* node_one = queue->front;
-  while(node_one != NULL){
-    history_pid* temp_two = node_one;
-    node_one = node_one->next_process;
-    free(temp_two);
-  }
-  if((queue->front !=NULL)&&(queue->back !=NULL)){
-  free(queue->front);
-  free(queue->back);
-  }
-  free(queue);
-}
