@@ -73,7 +73,7 @@ int main()
   //These are defined for the history feature and showpids feature 
   int process_id = -10;
   actual_queue* queue = create_queue();
-  int counter = 1;
+  int counter = 0;
 
   char * cmd_str = (char*) malloc( MAX_COMMAND_SIZE );
 
@@ -127,7 +127,8 @@ int main()
       //Will compare to the first cmp_str and priting 
       //command not found if they are not 
       if(strcmp(temp_str_one,cmd_str)==0){
-        printf("Command not found on history \n");
+        printf("Command not found on history. \n");
+        continue;
       }
     }
     char *working_str  = strdup( cmd_str );                
@@ -279,7 +280,7 @@ void print_queue(actual_queue* queue, int which_to_print, int line_no){
       int i =1;
       //In normal printing cases 
       while(starting_value != NULL){
-        if (i>15) i=15;
+        if (i>=15) i=15;
         if(starting_value->pid_id == -10){
           printf("Terminal Pid : %d. \n",getppid());
         }else{
