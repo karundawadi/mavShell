@@ -50,6 +50,7 @@
 typedef struct history_pid{
   int pid_id;
   char * storedText;
+  int interal_process_id;
   struct history_pid* next_process;
   struct history_pid* prev_process;
 }history_pid;
@@ -62,16 +63,16 @@ typedef struct actual_queue{
 int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_index);
 void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index);
 actual_queue* create_queue();
-history_pid* new_process(int pid_id,char * token);
+history_pid* new_process(int pid_id,char * token,int current_index);
 void print_queue(actual_queue* queue, int which_to_print, int line_no);
 
 //Main function
 int main()
 {
   //These are defined for the history feature and showpids feature 
-  int process_id;
+  int process_id = -10;
   actual_queue* queue = create_queue();
-  int counter = 0;
+  int counter = 1;
 
   char * cmd_str = (char*) malloc( MAX_COMMAND_SIZE );
 
@@ -146,9 +147,25 @@ int main()
       //Number is the number to re-execute again 
       print_queue(queue,1,0);
     }
+    
+    else if(strcmp(token[0],"showpids")==0){
+      //2 means print showpids
+      print_queue(queue,2,0);
+    }
 
-    else if(strcmp(token[0],"!")==0){
-      //Need to perform task demanded by !
+    else if(*token[0]=='!'){
+      //re-run the specific command 
+      history_pid* starting_value = queue->front;
+      int i =1;
+      printf("%d \n",atoi(token[1]));
+      while(atoi(token[1])!=i){
+        starting_value = starting_value->next_process;
+        if(i>atoi(token[1])){
+          printf("Command not in history. \n");
+          continue;
+        }
+      }
+      main(token_count,starting_value->storedText);
     }
 
     else{
@@ -156,7 +173,7 @@ int main()
       process_id = pid;
 
       if(pid == -1){
-        perror("fork failed");
+        perror("Fork failed");
         exit(EXIT_FAILURE);
       }
 
@@ -195,10 +212,11 @@ int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_i
 }
 
 //Create a new node with all the details 
-history_pid* new_process(int pid_id,char * token){
+history_pid* new_process(int pid_id,char * token,int current_index){
   history_pid* temp_process = (history_pid*) malloc(sizeof(history_pid));
   temp_process->next_process = NULL;
   temp_process->pid_id = pid_id;
+  temp_process->interal_process_id = current_index;
   temp_process->storedText = (char*) malloc(MAX_COMMAND_SIZE);
   strcpy(temp_process->storedText, token);
   return temp_process;
@@ -214,10 +232,10 @@ actual_queue* create_queue(){
 
 //This function adds to the queue
 void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index){
-    if(current_index > 16){
+    if(current_index > 15){
       delete_from_queue(queue,pid_id,token,current_index);
     }  
-    history_pid* temp_process = new_process(pid_id,token);
+    history_pid* temp_process = new_process(pid_id,token,current_index);
     //When the queue is empty, we have 
     if(queue->back == NULL){
       queue->front = queue->back = temp_process;
@@ -229,8 +247,8 @@ void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index
 
 //This process frees all the nodes in the queue
 void print_queue(actual_queue* queue, int which_to_print, int line_no){
-    if(which_to_print == 1){
-      
+    // 1 means history 
+    if(which_to_print == 1){  
       history_pid* starting_value = queue->front;
       int i =1;
       //In normal printing cases 
@@ -240,5 +258,24 @@ void print_queue(actual_queue* queue, int which_to_print, int line_no){
         i++;
         starting_value = starting_value->next_process;
       }
+    }
+    // 2 means showpids
+    else if(which_to_print == 2){
+      history_pid* starting_value = queue->front;
+      int i =1;
+      //In normal printing cases 
+      while(starting_value != NULL){
+        if (i>15) i=15;
+        if(starting_value->pid_id == -10){
+          printf("Terminal Pid : %d. \n",getppid());
+        }else{
+        printf("%d) %d \n",i,starting_value->pid_id);
+        i++;
+        }
+        starting_value = starting_value->next_process;
+      }
+    }
+    else{
+      //do nothing 
     }
 };
