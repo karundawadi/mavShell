@@ -63,7 +63,7 @@ int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_i
 void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index);
 actual_queue* create_queue();
 history_pid* new_process(int pid_id,char * token);
-void free_queue(actual_queue* queue);
+void print_queue(actual_queue* queue, int which_to_print, int line_no);
 
 //Main function
 int main()
@@ -91,7 +91,6 @@ int main()
     if((cmd_str[0]=='\n')||(cmd_str[0]==' ')){
       continue;
     }
-
     /* Parse input */
     char *token[MAX_NUM_ARGUMENTS];
 
@@ -142,7 +141,9 @@ int main()
       int changed_dir = chdir(str_cpu);
     }
     else if(strcmp(token[0],"history")==0){
-      //Need to print out the history 
+      //1 means print history and 0 meand re-run specfic task ; the end
+      //Number is the number to re-execute again 
+      print_queue(queue,1,0);
     }
 
     else if(strcmp(token[0],"!")==0){
@@ -178,8 +179,7 @@ int main()
       }
     }
     // Adding the details to the linked list 
-    add_to_queue(queue,process_id,working_str,counter);
-    free_queue(queue);
+    add_to_queue(queue,process_id,cmd_str,counter);
     free( working_root );
     }
   return 0;
@@ -202,6 +202,7 @@ history_pid* new_process(int pid_id,char * token){
   history_pid* temp_process = (history_pid*) malloc(sizeof(history_pid));
   temp_process->next_process = NULL;
   temp_process->pid_id = pid_id;
+  temp_process->storedText = (char*) malloc(MAX_COMMAND_SIZE);
   strcpy(temp_process->storedText, token);
   return temp_process;
 }
@@ -230,13 +231,6 @@ void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index
 }
 
 //This process frees all the nodes in the queue
-void free_queue(actual_queue* queue){
-    printf("Are we here yet? \n");
-    int i = 1;
-    history_pid* temp = queue->front;
-    while(temp->next_process!=NULL){
-      printf("%d) %d %s \n",i,temp->pid_id,temp->storedText);
-      if(i<15) i++;
-      temp=temp->next_process;
-    }
+void print_queue(actual_queue* queue, int which_to_print, int line_no){
+    
 };
