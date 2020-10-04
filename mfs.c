@@ -233,17 +233,11 @@ void print_queue(actual_queue* queue, int which_to_print, int line_no){
       
       history_pid* starting_value = queue->front;
       int i =1;
-      //In the case when the next value is null and somthing already exist
-      //Since in the first case front and end are basically the same  
-      if((queue->front->next_process ==NULL)||(queue->front->next_process !=NULL)){
-        printf("%d) %s",i,queue->front->storedText);
-      }
-
       //In normal printing cases 
       while(starting_value != NULL){
         if (i>15) i=15;
-        i++;
         printf("%d) %s",i,starting_value->storedText);
+        i++;
         starting_value = starting_value->next_process;
       }
     }
