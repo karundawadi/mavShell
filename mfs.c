@@ -100,17 +100,18 @@ int main()
     // Pointer to point to the token
     // parsed by strsep
     char *argument_ptr;                                         
-    
+
     if(cmd_str[0] == '!'){
       char* new_tok = NULL;
-      new_tok = strtok(token[0],"! ");
+      new_tok = strtok(cmd_str,"! ");
       int number_to_search = atoi(new_tok);
+      printf("%d \n",number_to_search);
       history_pid* starting_value = queue->front;
       int i =0;
       while(starting_value != NULL){
         ++i;
         if(i == number_to_search){
-          cmd_str = starting_value->storedText;
+          strcpy(cmd_str,starting_value->storedText);
         }else{
           starting_value = starting_value->next_process;
         }
@@ -169,26 +170,6 @@ int main()
     else if(strcmp(token[0],"showpids")==0){
       //2 means print showpids
       print_queue(queue,2,0);
-    }
-
-    else if(*token[0]=='!'){
-      //Token[0] has everything inside of it. Using this value and string toking it 
-      char* new_tok = NULL;
-      new_tok = strtok(token[0],"! ");
-      int number_to_search = atoi(new_tok);
-
-      history_pid* starting_value = queue->front;
-      int i =0;
-      while(starting_value != NULL){
-        ++i;
-        if(i == number_to_search){
-          cmd_str = starting_value->storedText;
-        }else{
-          starting_value = starting_value->next_process;
-        }
-      }
-      //In the end case
-      printf("Command not in history. \n");
     }
 
     else{
