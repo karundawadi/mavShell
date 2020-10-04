@@ -298,9 +298,13 @@ void print_queue(actual_queue* queue, int which_to_print, int line_no){
 void free_queue(actual_queue* queue){
   history_pid* node_one = queue->front;
   while(node_one != NULL){
-    delete_from_queue(node_one);
+    history_pid* temp_two = node_one;
+    node_one = node_one->next_process;
+    free(temp_two);
   }
+  if((queue->front !=NULL)&&(queue->back !=NULL)){
   free(queue->front);
   free(queue->back);
+  }
   free(queue);
 }
