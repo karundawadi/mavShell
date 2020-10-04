@@ -214,7 +214,7 @@ actual_queue* create_queue(){
 
 //This function adds to the queue
 void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index){
-    if(current_index >= 17){
+    if(current_index > 16){
       delete_from_queue(queue,pid_id,token,current_index);
     }  
     history_pid* temp_process = new_process(pid_id,token);
@@ -240,8 +240,8 @@ void print_queue(actual_queue* queue, int which_to_print, int line_no){
       }
 
       //In normal printing cases 
-      while(starting_value->next_process != NULL){
-        if (i>=15) i=15;
+      while(starting_value != NULL){
+        if (i>15) i=15;
         i++;
         printf("%d) %s",i,starting_value->storedText);
         starting_value = starting_value->next_process;
