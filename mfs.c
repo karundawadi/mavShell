@@ -112,7 +112,6 @@ int main()
       char* new_tok = NULL;
       new_tok = strtok(cmd_str,"! ");
       int number_to_search = atoi(new_tok);
-      printf("%d \n",number_to_search);
 
       history_pid* starting_value = queue->front;
       int i =0;
@@ -157,10 +156,10 @@ int main()
     //Print the tokenized input as a debug check
     int token_index  = 0;
 
-    for( token_index = 0; token_index < token_count; token_index ++ ) 
-    {
-      printf("token[%d] = %s\n", token_index, token[token_index] );  
-    }
+    // for( token_index = 0; token_index < token_count; token_index ++ ) 
+    // {
+    //   printf("token[%d] = %s\n", token_index, token[token_index] );  
+    // }
 
     //Code starts here
     if((strcmp(token[0],"exit")==0)||(strcmp(token[0],"quit")==0)){
