@@ -102,12 +102,15 @@ int main()
     char *argument_ptr;                                         
 
     if(cmd_str[0] == '!'){
+      //Strtoking to obtain the number and changing to int
       char* new_tok = NULL;
       new_tok = strtok(cmd_str,"! ");
       int number_to_search = atoi(new_tok);
       printf("%d \n",number_to_search);
+
       history_pid* starting_value = queue->front;
       int i =0;
+
       while(starting_value != NULL){
         ++i;
         if(i == number_to_search){
@@ -116,7 +119,7 @@ int main()
           starting_value = starting_value->next_process;
         }
       }
-      if(i>number_to_search){
+      if(starting_value == NULL){
         printf("Command not found on history \n");
       }
     }
