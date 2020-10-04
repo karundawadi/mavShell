@@ -86,7 +86,7 @@ int main()
     // inputs something since fgets returns NULL when there
     // is no input
     while( !fgets (cmd_str, MAX_COMMAND_SIZE, stdin) );
-
+  
     //Handling the case when the first chracter entered is a return key and follows multiple white spaces 
     if((cmd_str[0]=='\n')||(cmd_str[0]==' ')){
       continue;
@@ -118,6 +118,10 @@ int main()
       }
         token_count++;
     }
+    //Increasing the counter here
+    counter++;
+    // Adding the details to the linked list 
+    add_to_queue(queue,process_id,cmd_str,counter);
 
     //Print the tokenized input as a debug check
     int token_index  = 0;
@@ -126,9 +130,6 @@ int main()
     {
       printf("token[%d] = %s\n", token_index, token[token_index] );  
     }
-    //Adding to the index 
-    counter++;
-    printf("the command executed the index is %d",counter);
 
     //Code starts here
     if((strcmp(token[0],"exit")==0)||(strcmp(token[0],"quit")==0)){
@@ -160,10 +161,8 @@ int main()
       }
 
       else if(pid == 0){
-        printf("Child task \n");
         // Running execvp here as we do not specify the file path to it 
         int return_val = execvp(token[0],&token[0]);
-        printf("%d \n",return_val);
         //To check if the command exist or not 
         if (return_val == -1){
           printf("%s: Command not found. \n",token[0]);
@@ -178,8 +177,6 @@ int main()
         fflush(NULL);
       }
     }
-    // Adding the details to the linked list 
-    add_to_queue(queue,process_id,cmd_str,counter);
     free( working_root );
     }
   return 0;
@@ -232,5 +229,22 @@ void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index
 
 //This process frees all the nodes in the queue
 void print_queue(actual_queue* queue, int which_to_print, int line_no){
-    
+    if(which_to_print == 1){
+      
+      history_pid* starting_value = queue->front;
+      int i =1;
+      //In the case when the next value is null and somthing already exist
+      //Since in the first case front and end are basically the same  
+      if((queue->front->next_process ==NULL)||(queue->front->next_process !=NULL)){
+        printf("%d) %s",i,queue->front->storedText);
+      }
+
+      //In normal printing cases 
+      while(starting_value->next_process != NULL){
+        if (i>=15) i=15;
+        i++;
+        printf("%d) %s",i,starting_value->storedText);
+        starting_value = starting_value->next_process;
+      }
+    }
 };
