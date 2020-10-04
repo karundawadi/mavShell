@@ -103,6 +103,11 @@ int main()
     char *argument_ptr;                                         
 
     if(cmd_str[0] == '!'){
+      //Storing cmd_str temporarily to check whether to print command not found in history 
+      //or Not 
+      char * temp_str_one = (char*) malloc( MAX_COMMAND_SIZE );
+      strcpy(temp_str_one,cmd_str);
+
       //Strtoking to obtain the number and changing to int
       char* new_tok = NULL;
       new_tok = strtok(cmd_str,"! ");
@@ -120,7 +125,9 @@ int main()
           starting_value = starting_value->next_process;
         }
       }
-      if(starting_value == NULL){
+      //Will compare to the first cmp_str and priting 
+      //command not found if they are not 
+      if(strcmp(temp_str_one,cmd_str)==0){
         printf("Command not found on history \n");
       }
     }
