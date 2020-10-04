@@ -100,7 +100,25 @@ int main()
     // Pointer to point to the token
     // parsed by strsep
     char *argument_ptr;                                         
-                                                           
+    
+    if(cmd_str[0] == '!'){
+      char* new_tok = NULL;
+      new_tok = strtok(token[0],"! ");
+      int number_to_search = atoi(new_tok);
+      history_pid* starting_value = queue->front;
+      int i =0;
+      while(starting_value != NULL){
+        ++i;
+        if(i == number_to_search){
+          cmd_str = starting_value->storedText;
+        }else{
+          starting_value = starting_value->next_process;
+        }
+      }
+      if(i>number_to_search){
+        printf("Command not found on history \n");
+      }
+    }
     char *working_str  = strdup( cmd_str );                
 
     // we are going to move the working_str pointer so
@@ -154,18 +172,23 @@ int main()
     }
 
     else if(*token[0]=='!'){
-      //re-run the specific command 
+      //Token[0] has everything inside of it. Using this value and string toking it 
+      char* new_tok = NULL;
+      new_tok = strtok(token[0],"! ");
+      int number_to_search = atoi(new_tok);
+
       history_pid* starting_value = queue->front;
-      int i =1;
-      printf("%d \n",atoi(token[1]));
-      while(atoi(token[1])!=i){
-        starting_value = starting_value->next_process;
-        if(i>atoi(token[1])){
-          printf("Command not in history. \n");
-          continue;
+      int i =0;
+      while(starting_value != NULL){
+        ++i;
+        if(i == number_to_search){
+          cmd_str = starting_value->storedText;
+        }else{
+          starting_value = starting_value->next_process;
         }
       }
-      main(token_count,starting_value->storedText);
+      //In the end case
+      printf("Command not in history. \n");
     }
 
     else{
