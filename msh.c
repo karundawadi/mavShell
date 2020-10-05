@@ -61,6 +61,7 @@ typedef struct actual_queue{
   history_pid *front,*back;
 }actual_queue;
 
+//All the description of the funtion is added to above function re-decleration  
 int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_index);
 void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index);
 actual_queue* create_queue();
@@ -89,7 +90,8 @@ int main()
     // is no input
     while( !fgets (cmd_str, MAX_COMMAND_SIZE, stdin) );
   
-    //Handling the case when the first chracter entered is a return key and follows multiple white spaces 
+    //Handling the case when the first chracter entered is a return key and 
+    //follows multiple white spaces 
     if((cmd_str[0]=='\n')||(cmd_str[0]==' ')){
       continue;
     }
@@ -162,7 +164,8 @@ int main()
     //   printf("token[%d] = %s\n", token_index, token[token_index] );  
     // }
 
-    //Code starts here
+
+    //Actual code starts here
     if((strcmp(token[0],"exit")==0)||(strcmp(token[0],"quit")==0)){
       exit(0);
     }
@@ -170,6 +173,7 @@ int main()
       //Converting first argument after cd to a string 
       char str_cpu[100];
       strcpy(str_cpu,token[1]);
+      //Variable is not used, but kept just in case we need to validate the change 
       int changed_dir = chdir(str_cpu);
     }
     else if(strcmp(token[0],"history")==0){
@@ -214,11 +218,17 @@ int main()
   return 0;
 }
 
-
-//This function replaces from the front of the queue, return 1 if able,return 0 if false 
+//Arguments in all funcitons below have: 
 /*
   Takes in the process details and adds it to the front, freeing the front one 
+  Argument ->  Meaning 
+  queue -> The main queue 
+  pid_id -> The main id of the pid
+  token -> the cmd_str passed from main()
+  current_index -> Used to know which value we are working with 
 */
+
+//This function replaces from the front of the queue, return 1 if able,return 0 if false 
 int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_index){
   history_pid* temp = queue->front;
   queue->front =  temp->next_process;
@@ -226,7 +236,7 @@ int delete_from_queue(actual_queue* queue,int pid_id, char * token,int current_i
   return 1;
 }
 
-//Create a new node with all the details 
+//Create a new node with all the details specified above
 history_pid* new_process(int pid_id,char * token,int current_index){
   history_pid* temp_process = (history_pid*) malloc(sizeof(history_pid));
   temp_process->next_process = NULL;
@@ -251,7 +261,7 @@ void add_to_queue(actual_queue* queue,int pid_id, char * token,int current_index
       delete_from_queue(queue,pid_id,token,current_index);
     }  
     history_pid* temp_process = new_process(pid_id,token,current_index);
-    //When the queue is empty, we have 
+    //When the queue is empty, we have to create a new node from above and use to solve it. 
     if(queue->back == NULL){
       queue->front = queue->back = temp_process;
       return;
