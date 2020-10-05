@@ -155,7 +155,7 @@ int main()
     add_to_queue(queue,process_id,cmd_str,counter);
 
     //Print the tokenized input as a debug check
-    int token_index  = 0;
+    //int token_index  = 0;
 
     // for( token_index = 0; token_index < token_count; token_index ++ ) 
     // {
@@ -170,7 +170,6 @@ int main()
       //Converting first argument after cd to a string 
       char str_cpu[100];
       strcpy(str_cpu,token[1]);
-      int changed_dir = chdir(str_cpu);
     }
     else if(strcmp(token[0],"history")==0){
       //1 means print history and 0 meand re-run specfic task ; the end
